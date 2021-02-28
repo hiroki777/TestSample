@@ -1,0 +1,92 @@
+plugins {
+    id 'com.android.application'
+    id 'kotlin-android'
+}
+
+android {
+    compileSdkVersion 29
+
+    defaultConfig {
+        applicationId "com.example.testsample"
+        minSdkVersion 23
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    // 参考 https://qiita.com/nanoyatsu/items/cc2af0d792fad74afe2d
+    sourceSets {
+        test.java.srcDirs += 'src/test/java'
+        androidTest.java.srcDirs += 'src/androidTest/java'
+    }
+}
+
+configurations {
+    /*
+    単体テスト : testImplementation
+    結合テスト : androidTestImplementation
+    両方 : sharedTestImplementation
+    https://watabee-dev.hatenablog.com/entry/2018/12/03/214420
+     */
+    [testImplementation, androidTestImplementation]*.extendsFrom sharedTestImplementation
+}
+
+dependencies {
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    implementation 'androidx.core:core-ktx:1.3.2'
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.3.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
+
+    // region テスト用のプラグイン
+    // junit
+    sharedTestImplementation 'junit:junit:4.13.2'
+    sharedTestImplementation 'androidx.test.ext:junit:1.1.2'
+
+
+    sharedTestImplementation 'androidx.test:core:1.3.0'
+    sharedTestImplementation 'androidx.test:runner:1.3.0'
+    sharedTestImplementation 'androidx.test:rules:1.3.0'
+
+    /*
+    アサーション用のライブラリ
+    参考 https://tech.yappli.io/entry/tried_using_truth
+     */
+    testImplementation 'androidx.test.ext:truth:1.3.0'
+    testImplementation 'com.google.truth:truth:1.0.1'
+
+    // robolectric4.4はmockitoが依存するライブラリmock-makerと競合するので4.3を利用する
+    testImplementation 'org.robolectric:robolectric:4.3'
+
+    /*
+    ・Mockito-Kotlinの使用例
+    https://qiita.com/ymmtyuhei/items/2cb79031e20e1dcff6fc
+    ・Mockito-Kotlinを利用する
+    https://qiita.com/ralph/items/8a4b77007d0c20bada01
+     */
+    sharedTestImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.0.0-RC1'
+    sharedTestImplementation 'org.mockito:mockito-android:2.22.0'
+
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    // endregion
+}
